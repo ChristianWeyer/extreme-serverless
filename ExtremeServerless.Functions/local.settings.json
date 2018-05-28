@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
+    "SignalR": "Endpoint=https://xtreme-serverless.service.signalr.net;AccessKey=dZiTFFyxB3mhPZbxBYTqlQWGSj9Nm7NKYm+gxCIA1uY=;",
+    "CosmosDB": "AccountEndpoint=https://xtreme-serverless.documents.azure.com:443/;AccountKey=NWSDkMUjTRtpFD88KuFPBQsZ1uCthFifbCp9euYGjZSiQAG4pSxRzfp45aIYlVmkFEHIWWqgQ5DScusSifTCJA==;"
+  }
+}
