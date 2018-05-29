@@ -2,7 +2,7 @@ using System;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 
-namespace ExtremeServerless.Functions.Functions
+namespace ExtremeServerless.Functions
 {
     public static class KeepItWarm
     {

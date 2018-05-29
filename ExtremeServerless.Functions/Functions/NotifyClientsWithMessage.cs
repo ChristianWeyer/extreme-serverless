@@ -25,7 +25,7 @@ namespace ExtremeServerless.Functions
                 var messageToBroadcast = documents.Select((d) => new
                 {
                     message = d.GetPropertyValue<string>("message"),
-                    user = d.GetPropertyValue<string>("user")
+                    user = d.GetPropertyValue<User>("user")
                 });
 
                 await signalR.SendAsync("chatServerlessHub", "NewMessages", 
