@@ -40,7 +40,7 @@ export class ChatService {
                 .build();
 
             this._hubConnection.start().catch(err => console.error(err.toString()));
-
+            // TODO: only start when no error from start()...
             this._hubConnection.on('NewMessages', (data: any) => {
                 // Seems we need to do this with the early stage of SignalR...
                 var message = JSON.parse(data);
@@ -49,9 +49,9 @@ export class ChatService {
         });
     }
 
-    public send(message: Message): Observable<void> {
+    public send(message: Message) {
         let requestUrl = `${environment.apiBaseUrl}save`;
 
-        return this._http.post(requestUrl, message).pipe(map((result: any) => { }));
+        return this._http.post(requestUrl, message);
     }
 }

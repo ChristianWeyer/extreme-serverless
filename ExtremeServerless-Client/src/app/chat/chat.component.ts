@@ -42,17 +42,16 @@ export class ChatComponent implements OnInit, AfterViewInit {
     }, 0);
 
     this._chatService.init();
+    this._chatService.messages.subscribe(message => {
+      //this._zone.run(() =>{
+        this.messages.push(message);
+      //});
+    });
   }
 
   ngAfterViewInit(): void {
     this.matListItems.changes.subscribe(elements => {
       this.scrollToBottom();
-    });
-
-    this._chatService.messages.subscribe(message => {
-      //this._zone.run(() =>{
-        this.messages.push(message);
-      //});
     });
   }
 
@@ -106,7 +105,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this._chatService.send({
       user: this.user,
       message: message
-    }).subscribe(() => {});
+    }).subscribe();
 
    this.messageContent = null;
   }
