@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: "http://localhost:7071/api/"
+  //apiBaseUrl: 'http://localhost:7071/api/'
+  apiBaseUrl: 'https://xtreme-serverless-functions.azurewebsites.net/api/'
 };

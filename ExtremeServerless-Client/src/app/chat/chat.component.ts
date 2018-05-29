@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChildren, ViewChild, AfterViewInit, QueryList, ElementRef, NgZone } from '@angular/core';
-import { MatDialog, MatDialogRef, MatList, MatListItem } from '@angular/material';
+import {Component, OnInit, ViewChildren, ViewChild, AfterViewInit, QueryList, ElementRef, NgZone} from '@angular/core';
+import {MatDialog, MatDialogRef, MatList, MatListItem} from '@angular/material';
 
-import { Message } from './shared/model/message';
-import { User } from './shared/model/user';
-import { DialogUserComponent } from './dialog-user/dialog-user.component';
-import { DialogUserType } from './dialog-user/dialog-user-type';
-import { ChatService } from './shared/services/chatService';
+import {Message} from './shared/model/message';
+import {User} from './shared/model/user';
+import {DialogUserComponent} from './dialog-user/dialog-user.component';
+import {DialogUserType} from './dialog-user/dialog-user-type';
+import {ChatService} from './shared/services/chatService';
 
 const AVATAR_URL = 'https://api.adorable.io/avatars/285';
 
@@ -31,8 +31,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(MatListItem, { read: ElementRef }) matListItems: QueryList<MatListItem>;
 
-  constructor(private _chatService: ChatService, private _zone: NgZone, 
-    public dialog: MatDialog) { }
+  constructor(private _chatService: ChatService, private _zone: NgZone,
+              public dialog: MatDialog) {
+  }
 
   ngOnInit(): void {
     this.initModel();
@@ -44,7 +45,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this._chatService.init();
     this._chatService.messages.subscribe(message => {
       //this._zone.run(() =>{
-        this.messages.push(message);
+      this.messages.push(message);
       //});
     });
   }
@@ -107,6 +108,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
       message: message
     }).subscribe();
 
-   this.messageContent = null;
+    this.messageContent = null;
   }
 }
