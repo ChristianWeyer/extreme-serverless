@@ -1,9 +1,16 @@
 <div class="chat-container">
   <mat-card class="main-card">
     <mat-list class="chat-list">
+<<<<<<< HEAD
       <mat-list-item *ngFor="let message of messages" [ngClass]="[(message.action === undefined && message.user.id === user.id)? 'chat-list-item': '']">
         <img mat-list-avatar [src]="message.user.avatar">
         <h4 mat-line>
+=======
+      <mat-list-item *ngFor="let message of messages"
+                     [ngClass]="[(message.action === undefined && message.user.id === user.id)? 'chat-list-item': '']">
+        <img mat-list-avatar *ngIf="message.action === undefined" [src]="message.user.avatar">
+        <h4 mat-line *ngIf="message.action === undefined">
+>>>>>>> c98ec3d8d692091bec30f70869c10663f3baba1a
           <b>{{message.user.name}}</b>
         </h4>
         <p mat-line>
@@ -15,11 +22,11 @@
     <div class="chat-footer-container">
       <mat-icon>message</mat-icon>
       <mat-form-field class="chat-input">
-        <input matInput 
-               #inputMessage 
-               maxlength="140" 
-               placeholder="Type your message" 
-               [(ngModel)]="messageContent" 
+        <input matInput
+               #inputMessage
+               maxlength="140"
+               placeholder="Type your message"
+               [(ngModel)]="messageContent"
                (keyup.enter)="sendMessage(messageContent)">
         <mat-hint align="end">{{inputMessage.value.length}}/140</mat-hint>
         

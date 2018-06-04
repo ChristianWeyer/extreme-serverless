@@ -1,57 +1,57 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { HubConnection } from '@aspnet/signalr';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {HubConnection} from '@aspnet/signalr';
 import * as signalR from '@aspnet/signalr';
-import { Observable } from "rxjs";
-import { ConnectionConfig } from "../model/connectionConfig";
-import { map } from "rxjs/operators";
-import { Subject } from "rxjs";
-import { environment } from "environments/environment";
-import { Message } from "../model/message";
+import {Observable} from 'rxjs';
+import {ConnectionConfig} from '../model/connectionConfig';
+import {map} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {environment} from 'environments/environment';
+import {Message} from '../model/message';
 
 @Injectable()
 export class ChatService {
-    private _hubConnection: HubConnection;
-  
-    public messages: Subject<Message> = new Subject();
+  private _hubConnection: HubConnection;
 
-    constructor(private _http: HttpClient) {
-    }
+  public messages: Subject<Message> = new Subject();
 
-    private getConnectionInfo(): Observable<ConnectionConfig> {
-        let requestUrl = `${environment.apiBaseUrl}config`;
-        
-        return this._http.get<ConnectionConfig>(requestUrl);
-    }
+  constructor(private _http: HttpClient) {
+  }
 
-    public init() {
-        console.log(`Initializing ChatService...`);
+  private getConnectionInfo(): Observable<ConnectionConfig> {
+    let requestUrl = `${environment.apiBaseUrl}config`;
 
-        this.getConnectionInfo().subscribe(config => {
-            console.log(`Received info for endpoint ${config.hubUrl}`);
+    return this._http.get<ConnectionConfig>(requestUrl);
+  }
 
-            let options = {
-                accessTokenFactory: () => config.accessToken
-            };
+  public init() {
+    console.log(`Initializing ChatService...`);
 
-            this._hubConnection = new signalR.HubConnectionBuilder()
-                .withUrl(config.hubUrl, options)
-                .configureLogging(signalR.LogLevel.Information)
-                .build();
+    this.getConnectionInfo().subscribe(config => {
+      console.log(`Received info for endpoint ${config.hubUrl}`);
 
-            this._hubConnection.start().catch(err => console.error(err.toString()));
-            // TODO: only start when no error from start()...
-            this._hubConnection.on('NewMessages', (data: any) => {
-                // Seems we need to do this with the early stage of SignalR...
-                var message = JSON.parse(data);
-                this.messages.next(message);
-            });
-        });
-    }
+      let options = {
+        accessTokenFactory: () => config.accessToken
+      };
 
-    public send(message: Message) {
-        let requestUrl = `${environment.apiBaseUrl}save`;
+      this._hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl(config.hubUrl, options)
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
 
-        return this._http.post(requestUrl, message);
-    }
+      this._hubConnection.start().catch(err => console.error(err.toString()));
+      // TODO: only start when no error from start()...
+      this._hubConnection.on('NewMessages', (data: any) => {
+        // Seems we need to do this with the early stage of SignalR...
+        var message = JSON.parse(data);
+        this.messages.next(message);
+      });
+    });
+  }
+
+  public send(message: Message) {
+    let requestUrl = `${environment.apiBaseUrl}save`;
+
+    return this._http.post(requestUrl, message);
+  }
 }
