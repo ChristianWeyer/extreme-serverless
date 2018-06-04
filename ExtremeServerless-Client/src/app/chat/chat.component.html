@@ -1,7 +1,7 @@
 <div class="chat-container">
   <mat-card class="main-card">
-    <mat-list class="chat-list">
-      <mat-list-item *ngFor="let message of messages" [ngClass]="[(message.action === undefined && message.user.id === user.id)? 'chat-list-item': '']">
+    <mat-list class="chat-list" *ngIf="messages$ | async as messages">
+      <mat-list-item *ngFor="let message of messages" [ngClass]="{'chat-list-item': !message.action && message.user.id === user.id}">
         <img mat-list-avatar [src]="message.user.avatar">
         <h4 mat-line>
           <b>{{message.user.name}}</b>
@@ -9,22 +9,22 @@
         <p mat-line>
           <span> {{message.message}} </span>
         </p>
-        
       </mat-list-item>
     </mat-list>
     <div class="chat-footer-container">
-      <mat-icon>message</mat-icon>
-      <mat-form-field class="chat-input">
-        <input matInput
-               #inputMessage
-               maxlength="140"
-               placeholder="Type your message"
-               [(ngModel)]="messageContent"
-               (keyup.enter)="sendMessage(messageContent)">
-        <mat-hint align="end">{{inputMessage.value.length}}/140</mat-hint>
-        
-      </mat-form-field>
-      <button mat-fab (click)="sendMessage(messageContent)">Send</button>
+      <form [formGroup]="formGroup" (ngSubmit)="sendMessage()" #messageForm="ngForm">
+        <mat-icon>message</mat-icon>
+        <mat-form-field class="chat-input">
+          <input matInput
+                 #inputMessage
+                 maxlength="140"
+                 placeholder="Type your message"
+                 formControlName="messageContent">
+          <mat-hint align="end">{{inputMessage.value.length}}/140</mat-hint>
+
+        </mat-form-field>
+        <button mat-fab type="submit">Send</button>
+      </form>
     </div>
   </mat-card>
 </div>

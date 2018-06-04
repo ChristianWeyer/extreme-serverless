@@ -1,27 +1,21 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {HubConnection} from '@aspnet/signalr';
+import {Injectable} from '@angular/core';
 import * as signalR from '@aspnet/signalr';
-import {Observable} from 'rxjs';
-import {ConnectionConfig} from '../model/connectionConfig';
-import {map} from 'rxjs/operators';
-import {Subject} from 'rxjs';
+import {HubConnection, IHttpConnectionOptions} from '@aspnet/signalr';
 import {environment} from 'environments/environment';
+import {Observable, Subject} from 'rxjs';
+import {ConnectionConfig} from '../model/connectionConfig';
 import {Message} from '../model/message';
 
 @Injectable()
 export class ChatService {
-  private _hubConnection: HubConnection;
+  public messages$: Observable<Message[]>;
 
-  public messages: Subject<Message> = new Subject();
+  private _hubConnection: HubConnection;
+  private _messagesSubject: Subject<Message[]> = new Subject();
 
   constructor(private _http: HttpClient) {
-  }
-
-  private getConnectionInfo(): Observable<ConnectionConfig> {
-    let requestUrl = `${environment.apiBaseUrl}config`;
-
-    return this._http.get<ConnectionConfig>(requestUrl);
+    this.messages$ = this._messagesSubject.asObservable();
   }
 
   public init() {
@@ -30,8 +24,8 @@ export class ChatService {
     this.getConnectionInfo().subscribe(config => {
       console.log(`Received info for endpoint ${config.hubUrl}`);
 
-      let options = {
-        accessTokenFactory: () => config.accessToken
+      const options: IHttpConnectionOptions = {
+        accessTokenFactory: () => config.accessToken,
       };
 
       this._hubConnection = new signalR.HubConnectionBuilder()
@@ -43,15 +37,21 @@ export class ChatService {
       // TODO: only start when no error from start()...
       this._hubConnection.on('NewMessages', (data: any) => {
         // Seems we need to do this with the early stage of SignalR...
-        var message = JSON.parse(data);
-        this.messages.next(message);
+        const message = JSON.parse(data);
+        this._messagesSubject.next(message);
       });
     });
   }
 
   public send(message: Message) {
-    let requestUrl = `${environment.apiBaseUrl}save`;
+    const requestUrl = `${environment.apiBaseUrl}save`;
 
     return this._http.post(requestUrl, message);
+  }
+
+  private getConnectionInfo(): Observable<ConnectionConfig> {
+    const requestUrl = `${environment.apiBaseUrl}config`;
+
+    return this._http.get<ConnectionConfig>(requestUrl);
   }
 }

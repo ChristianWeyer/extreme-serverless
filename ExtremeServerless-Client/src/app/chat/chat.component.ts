@@ -1,10 +1,13 @@
-import {Component, OnInit, ViewChildren, ViewChild, AfterViewInit, QueryList, ElementRef, NgZone} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {MatDialog, MatDialogRef, MatList, MatListItem} from '@angular/material';
-
+import {Observable} from 'rxjs/internal/Observable';
+import {of} from 'rxjs/internal/observable/of';
+import {filter, flatMap} from 'rxjs/operators';
+import {DialogUserType} from './dialog-user/dialog-user-type';
+import {DialogUserComponent} from './dialog-user/dialog-user.component';
 import {Message} from './shared/model/message';
 import {User} from './shared/model/user';
-import {DialogUserComponent} from './dialog-user/dialog-user.component';
-import {DialogUserType} from './dialog-user/dialog-user-type';
 import {ChatService} from './shared/services/chatService';
 
 const AVATAR_URL = 'https://api.adorable.io/avatars/285';
@@ -12,48 +15,75 @@ const AVATAR_URL = 'https://api.adorable.io/avatars/285';
 @Component({
   selector: 'tcc-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+  styleUrls: ['./chat.component.css'],
 })
 export class ChatComponent implements OnInit, AfterViewInit {
   user: User;
-  messages: Message[] = [];
-  messageContent: string;
+  messages$: Observable<Message[]>;
   dialogRef: MatDialogRef<DialogUserComponent> | null;
   defaultDialogUserParams: any = {
     disableClose: true,
     data: {
       title: 'Welcome',
-      dialogType: DialogUserType.NEW
-    }
+      dialogType: DialogUserType.NEW,
+    },
   };
+
+  formGroup: FormGroup;
+  @ViewChild('messageForm') messageForm: NgForm;
 
   @ViewChild(MatList, { read: ElementRef }) matList: ElementRef;
 
   @ViewChildren(MatListItem, { read: ElementRef }) matListItems: QueryList<MatListItem>;
 
-  constructor(private _chatService: ChatService, 
-    public dialog: MatDialog) { }
+  private _messages: Message[] = [];
+
+  constructor(
+    private _chatService: ChatService,
+    public dialog: MatDialog,
+    private _formBuilder: FormBuilder,
+  ) {
+    this.createForm();
+  }
 
   ngOnInit(): void {
     this.initModel();
     // Using timeout due to https://github.com/angular/angular/issues/14748
-    setTimeout(() => {
-      this.openUserPopup(this.defaultDialogUserParams);
-    }, 0);
+    Promise.resolve()
+      .then(() => this.openUserPopup(this.defaultDialogUserParams));
 
     this._chatService.init();
-    this._chatService.messages.subscribe(messagesFromServer => {
-      this.messages = this.messages.concat(messagesFromServer);
-    });
+
+    this.messages$ = this._chatService.messages$
+      .pipe(
+        flatMap(messagesFromServer => {
+          this._messages = this._messages.concat(messagesFromServer);
+          return of(this._messages);
+        }),
+      );
   }
 
   ngAfterViewInit(): void {
-    this.matListItems.changes.subscribe(elements => {
+    this.matListItems.changes.subscribe(() => {
       this.scrollToBottom();
     });
   }
 
   // auto-scroll fix: inspired by this stack overflow post
+
+  public sendMessage(): void {
+    if (this.messageForm.invalid) {
+      return;
+    }
+
+    this._chatService.send({
+      user: this.user,
+      message: this.formGroup.value.messageContent,
+    }).subscribe();
+
+    this.messageForm.resetForm();
+  }
+
   // https://stackoverflow.com/questions/35232731/angular2-scroll-to-bottom-chat-style
   private scrollToBottom(): void {
     try {
@@ -66,8 +96,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
     const randomId = this.getRandomId();
     this.user = {
       id: randomId,
-      avatar: `${AVATAR_URL}/${randomId}.png`
-    };
+      avatar: `${AVATAR_URL}/${randomId}.png`,
+    } as User;
   }
 
   private getRandomId(): number {
@@ -76,25 +106,12 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   private openUserPopup(params): void {
     this.dialogRef = this.dialog.open(DialogUserComponent, params);
-    this.dialogRef.afterClosed().subscribe(paramsDialog => {
-      if (!paramsDialog) {
-        return;
-      }
-
-      this.user.name = paramsDialog.username;
-    });
+    this.dialogRef.afterClosed()
+      .pipe(filter(paramsDialog => paramsDialog))
+      .subscribe(paramsDialog => this.user.name = paramsDialog.username);
   }
 
-  public sendMessage(message: string): void {
-    if (!message) {
-      return;
-    }
-
-    this._chatService.send({
-      user: this.user,
-      message: message
-    }).subscribe();
-
-    this.messageContent = null;
+  private createForm() {
+    this.formGroup = this._formBuilder.group({ messageContent: ['', Validators.required] });
   }
 }
