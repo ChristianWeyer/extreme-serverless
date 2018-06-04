@@ -20,6 +20,19 @@
       },
       "backendUri": "https://%WEBSITE_HOSTNAME%/api/getsignalrconfiguration"
     },
+    "le": {
+      "matchCondition": {
+        "route": "/.well-known/acme-challenge/{*code}",
+        "methods": [
+          "GET",
+          "PUT",
+          "POST",
+          "DELETE",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "https://%WEBSITE_HOSTNAME%/api/letsencrypt/{code}"
+    },
     "default": {
       "matchCondition": {
         "route": "",
