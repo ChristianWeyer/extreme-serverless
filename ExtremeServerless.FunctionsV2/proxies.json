@@ -19,6 +19,26 @@
         ]
       },
       "backendUri": "https://%WEBSITE_HOSTNAME%/api/getsignalrconfiguration"
+    },
+    "default": {
+      "matchCondition": {
+        "route": "",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "https://xtremeserverlessfilez.z4.web.core.windows.net/"
+    },
+    "files": {
+      "matchCondition": {
+        "route": "{*path}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "https://xtremeserverlessfilez.z4.web.core.windows.net/{path}"
     }
   }
 }
