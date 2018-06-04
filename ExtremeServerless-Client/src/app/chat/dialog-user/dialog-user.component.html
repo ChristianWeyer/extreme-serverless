@@ -1,17 +1,18 @@
 <h2 mat-dialog-title>{{params.title}}</h2>
 
 <mat-dialog-content>
-  <mat-form-field>
-    <input matInput name="username" placeholder="Username"
-           [(ngModel)]="params.username" (keyup.enter)="onSave()" [formControl]="usernameFormControl" required>
-    <mat-error>This field is required</mat-error>
-    <mat-hint>Please type your username</mat-hint>
-  </mat-form-field>
+  <form (ngSubmit)="onSave()" [formGroup]="formGroup">
+    <mat-form-field>
+      <input matInput name="username" placeholder="Username" formControlName="username">
+      <mat-error>This field is required</mat-error>
+      <mat-hint>Please type your username</mat-hint>
+    </mat-form-field>
+  </form>
 </mat-dialog-content>
 
 <mat-dialog-actions *ngIf="params?.typeDialog === 'new-user'" [attr.align]="'end'">
   <button mat-raised-button color="primary" mat-dialog-close (click)="onSave()"
-          [disabled]="usernameFormControl.hasError('required')">Chat!
+          [disabled]="formGroup.invalid">Chat!
   </button>
 </mat-dialog-actions>
 
