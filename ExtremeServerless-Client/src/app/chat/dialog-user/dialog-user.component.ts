@@ -1,29 +1,33 @@
-import {Component, OnInit, Inject} from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import {FormControl, Validators} from '@angular/forms';
+import {Component} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatDialogRef} from '@angular/material';
 
 @Component({
   selector: 'tcc-dialog-user',
   templateUrl: './dialog-user.component.html',
-  styleUrls: ['./dialog-user.component.css']
+  styleUrls: ['./dialog-user.component.css'],
 })
-export class DialogUserComponent implements OnInit {
-  usernameFormControl = new FormControl('', [Validators.required]);
-  previousUsername: string;
+export class DialogUserComponent {
+  public formGroup: FormGroup;
 
-  constructor(public dialogRef: MatDialogRef<DialogUserComponent>,
-              @Inject(MAT_DIALOG_DATA) public params: any) {
-    this.previousUsername = params.username ? params.username : undefined;
-  }
-
-  ngOnInit() {
+  constructor(
+    public dialogRef: MatDialogRef<DialogUserComponent>,
+    private _formBuilder: FormBuilder,
+  ) {
+    this.createForm();
   }
 
   public onSave(): void {
-    this.dialogRef.close({
-      username: this.params.username,
-      dialogType: this.params.dialogType,
-      previousUsername: this.previousUsername
+    if (this.formGroup.invalid) {
+      return;
+    }
+
+    this.dialogRef.close({ username: this.formGroup.value.username });
+  }
+
+  private createForm() {
+    this.formGroup = this._formBuilder.group({
+      username: ['', Validators.required],
     });
   }
 }
