@@ -23,7 +23,7 @@
           <mat-hint align="end">{{inputMessage.value.length}}/140</mat-hint>
 
         </mat-form-field>
-        <button mat-fab type="submit">Send</button>
+        <button mat-fab type="submit" [disabled]="formGroup.invalid">Send</button>
       </form>
     </div>
   </mat-card>

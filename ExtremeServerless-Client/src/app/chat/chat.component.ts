@@ -72,10 +72,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
   // auto-scroll fix: inspired by this stack overflow post
 
   public sendMessage(): void {
-    if (this.messageForm.invalid) {
-      return;
-    }
-
     this._chatService.send({
       user: this.user,
       message: this.formGroup.value.messageContent,
