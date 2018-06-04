@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{params.title}}</h2>
+<h2 mat-dialog-title>Welcome</h2>
 
 <mat-dialog-content>
   <form (ngSubmit)="onSave()" [formGroup]="formGroup">
@@ -9,14 +9,3 @@
     </mat-form-field>
   </form>
 </mat-dialog-content>
-
-<mat-dialog-actions *ngIf="params?.typeDialog === 'new-user'" [attr.align]="'end'">
-  <button mat-raised-button color="primary" mat-dialog-close (click)="onSave()"
-          [disabled]="formGroup.invalid">Chat!
-  </button>
-</mat-dialog-actions>
-
-<mat-dialog-actions *ngIf="params?.typeDialog === 'edit-user'" [attr.align]="'end'">
-  <button mat-button mat-dialog-close color="secondary">Close</button>
-  <button mat-raised-button color="primary" mat-dialog-close (click)="onSave()">Save</button>
-</mat-dialog-actions>

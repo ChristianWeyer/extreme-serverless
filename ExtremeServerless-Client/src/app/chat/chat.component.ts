@@ -20,12 +20,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   user: User;
   messages$: Observable<Message[]>;
   dialogRef: MatDialogRef<DialogUserComponent> | null;
-  defaultDialogUserParams: any = {
-    disableClose: true,
-    data: {
-      title: 'Welcome'
-    },
-  };
+  defaultDialogUserParams: any = { disableClose: true };
 
   formGroup: FormGroup;
   @ViewChild('messageForm') messageForm: NgForm;
