@@ -31,14 +31,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(MatListItem, { read: ElementRef }) matListItems: QueryList<MatListItem>;
 
-<<<<<<< HEAD
   constructor(private _chatService: ChatService, 
     public dialog: MatDialog) { }
-=======
-  constructor(private _chatService: ChatService, private _zone: NgZone,
-              public dialog: MatDialog) {
-  }
->>>>>>> c98ec3d8d692091bec30f70869c10663f3baba1a
 
   ngOnInit(): void {
     this.initModel();
@@ -48,15 +42,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
     }, 0);
 
     this._chatService.init();
-<<<<<<< HEAD
     this._chatService.messages.subscribe(messagesFromServer => {
       this.messages = this.messages.concat(messagesFromServer);
-=======
-    this._chatService.messages.subscribe(message => {
-      //this._zone.run(() =>{
-      this.messages.push(message);
-      //});
->>>>>>> c98ec3d8d692091bec30f70869c10663f3baba1a
     });
   }
 
