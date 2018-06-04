@@ -4,7 +4,6 @@ import {MatDialog, MatDialogRef, MatList, MatListItem} from '@angular/material';
 import {Observable} from 'rxjs/internal/Observable';
 import {of} from 'rxjs/internal/observable/of';
 import {filter, flatMap} from 'rxjs/operators';
-import {DialogUserType} from './dialog-user/dialog-user-type';
 import {DialogUserComponent} from './dialog-user/dialog-user.component';
 import {Message} from './shared/model/message';
 import {User} from './shared/model/user';
@@ -21,13 +20,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   user: User;
   messages$: Observable<Message[]>;
   dialogRef: MatDialogRef<DialogUserComponent> | null;
-  defaultDialogUserParams: any = {
-    disableClose: true,
-    data: {
-      title: 'Welcome',
-      dialogType: DialogUserType.NEW,
-    },
-  };
+  defaultDialogUserParams: any = { disableClose: true };
 
   formGroup: FormGroup;
   @ViewChild('messageForm') messageForm: NgForm;
