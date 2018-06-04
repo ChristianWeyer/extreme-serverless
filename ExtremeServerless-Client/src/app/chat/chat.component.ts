@@ -31,7 +31,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(MatListItem, { read: ElementRef }) matListItems: QueryList<MatListItem>;
 
-  constructor(private _chatService: ChatService, private _zone: NgZone, 
+  constructor(private _chatService: ChatService, 
     public dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -42,10 +42,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
     }, 0);
 
     this._chatService.init();
-    this._chatService.messages.subscribe(message => {
-      //this._zone.run(() =>{
-        this.messages.push(message);
-      //});
+    this._chatService.messages.subscribe(messagesFromServer => {
+      this.messages = this.messages.concat(messagesFromServer);
     });
   }
 
@@ -74,16 +72,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   private getRandomId(): number {
     return Math.floor(Math.random() * (1000000)) + 1;
-  }
-
-  public onClickUserInfo() {
-    this.openUserPopup({
-      data: {
-        username: this.user.name,
-        title: 'Edit Details',
-        dialogType: DialogUserType.EDIT
-      }
-    });
   }
 
   private openUserPopup(params): void {
