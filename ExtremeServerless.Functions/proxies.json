@@ -19,6 +19,39 @@
         ]
       },
       "backendUri": "https://%WEBSITE_HOSTNAME%/api/getsignalrconfiguration"
+    },
+    "le": {
+      "matchCondition": {
+        "route": "/.well-known/acme-challenge/{*code}",
+        "methods": [
+          "GET",
+          "PUT",
+          "POST",
+          "DELETE",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "https://%WEBSITE_HOSTNAME%/api/letsencrypt/{code}"
+    },
+    "default": {
+      "matchCondition": {
+        "route": "",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "https://xtremeserverlessfilez.z4.web.core.windows.net/"
+    },
+    "files": {
+      "matchCondition": {
+        "route": "{*path}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "https://xtremeserverlessfilez.z4.web.core.windows.net/{path}"
     }
   }
 }
