@@ -16,20 +16,21 @@ namespace ExtremeServerless.Functions
         
         [FunctionName("NotifyClientsWithMessage")]
         public static async Task Run(
-            [CosmosDBTrigger("chatsystem", "messages", ConnectionStringSetting = "CosmosDB")]
+            [CosmosDBTrigger("chatsystem", "messages", 
+                ConnectionStringSetting = "CosmosDB")]
             IReadOnlyList<Document> documents, 
             TraceWriter log)
         {
             if (documents != null && documents.Count > 0)
             {
-                var messageToBroadcast = documents.Select((d) => new
+                var messagesToBroadcast = documents.Select((doc) => new
                 {
-                    message = d.GetPropertyValue<string>("message"),
-                    user = d.GetPropertyValue<string>("user")
+                    message = doc.GetPropertyValue<string>("message"),
+                    user = doc.GetPropertyValue<string>("user")
                 });
 
                 await signalR.SendAsync("chatServerlessHub", "NewMessages", 
-                    JsonConvert.SerializeObject(messageToBroadcast));
+                    JsonConvert.SerializeObject(messagesToBroadcast));
             }
         }
     }
