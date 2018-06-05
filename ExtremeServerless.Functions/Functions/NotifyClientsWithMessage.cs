@@ -16,7 +16,7 @@ namespace ExtremeServerless.Functions
         
         [FunctionName("NotifyClientsWithMessage")]
         public static async Task Run(
-            [CosmosDBTrigger("chatsystem", "messages", ConnectionStringSetting = "CosmosDB")]
+            [CosmosDBTrigger("chatsystem", "messages", ConnectionStringSetting = "CosmosDB", FeedPollDelay = 1000)]
             IReadOnlyList<Document> documents, 
             TraceWriter log)
         {
