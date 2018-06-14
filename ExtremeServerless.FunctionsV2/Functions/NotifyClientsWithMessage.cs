@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.ChangeFeedProcessor;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
@@ -26,7 +27,7 @@ namespace ExtremeServerless.Functions
                 var messagesToBroadcast = documents.Select((doc) => new
                 {
                     message = doc.GetPropertyValue<string>("message"),
-                    user = doc.GetPropertyValue<string>("user")
+                    user = doc.GetPropertyValue<User>("user")
                 });
 
                 await signalR.SendAsync("chatServerlessHub", "NewMessages", 
